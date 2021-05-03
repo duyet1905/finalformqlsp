@@ -1,12 +1,14 @@
+/* eslint-disable eqeqeq */
 import React, { Component } from "react";
 import RTable from "./RTable";
 import FInput from "./FormInput";
 import "rsuite/dist/styles/rsuite-default.css";
+import example from "../Component/productarr"
 export default class Product extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      ArrayProduct: '',
+      ArrayProduct: example,
       Element: {
         id: "",
         name: "",
@@ -24,11 +26,11 @@ export default class Product extends Component {
     this.setState({ disableInputID });
   };
 
-  clearInput = () => {
+  Input = () => {
     this.setState({ Element: {} });
   };
 
-  checkValidateId = (ProductAttribute) => {
+  Validate = (ProductAttribute) => {
     let { ArrayProduct } = this.state;
     let validate = true;
     let count = 0;
@@ -42,11 +44,11 @@ export default class Product extends Component {
     return validate;
   };
 
-  handleDataSubmit = (obj) => {
+  Submit = (obj) => {
     let { index } = this;
     let { ArrayProduct, ArrayTemporary, disableInputID } = this.state;
     if (!disableInputID) {
-      if (!this.checkValidateId(obj)) {
+      if (!this.Validate(obj)) {
         return;
       } else {
         this.setState({
@@ -67,7 +69,7 @@ export default class Product extends Component {
       this.setState({ ArrayProduct, ArrayTemporary });
     }
     this.onChangeStatusInputId(false);
-    this.clearInput();
+    this.Input();
   };
 
   showFormEdit = (id) => {
@@ -92,6 +94,35 @@ export default class Product extends Component {
       this.setState({ ArrayProduct, ArrayTemporary });
     }
   };
+  Search = (e) => {
+    let search = this.state.ArrayProduct.filter((newArray) => {
+      return (
+        newArray.name.toUpperCase().includes(e.target.value.toUpperCase()) ||
+        newArray.name.toLowerCase().includes(e.target.value.toLowerCase())
+      );
+    });
+    this.setState({
+      keyWord: e.target.value.toUpperCase(),
+      ArrayTemporary: search,
+    });
+    this.Input();
+  };
+
+
+
+
+  deleteDataTable =(checkedKeys)=> {
+           let array = this.state.ArrayProduct
+          console.log(array);
+          let select = checkedKeys;
+          console.log(select)
+    let result = array.splice(select,4)    
+    console.log(result); 
+
+
+  }
+
+
 
   render() {
     let {
@@ -102,20 +133,52 @@ export default class Product extends Component {
       keyWord,
     } = this.state;
     return (
+      
       <div className="main">
         <FInput
-          onSubmitData={this.handleDataSubmit}
+          onSubmitData={this.Submit}
           initialValues={Properties}
           disableInputID={disableInputID}
+          
         />
+        <div className="search">
+            <input
+              onChange={this.Search}
+              value={keyWord}
+              placeholder="Search..."
+            />
+            </div>
           <RTable
             ArrayProduct={ArrayProduct}
             ArrayTemporary={ArrayTemporary}
             showFormEdit={this.showFormEdit}
             deleteData={this.deleteData}
+            deleteDataTable={this.deleteDataTable}
             keyWord={keyWord}
           />
         </div>
     );
   }
 }
+
+  //  try {
+            
+            // let table = document.getElementById("dataTable");
+            //  let rowCount = table.rows.length;
+
+            // for (var i = 0; i < rowCount; i++) {
+            //     var row = table.rows[i];
+            //     var checkbox = row.cells[0].childNodes[0];
+            //     if (null != checkbox && true == checkbox.checked) {
+            //        if (rowCount <= 1) {
+            //            alert("không thể xóa!");
+            //            break;
+            //         }
+            //          table.deleteRow(i);
+            //          rowCount--;
+            //          i--;
+            //      }
+            //  }
+        //  } catch (e) {
+        //     alert(e);
+        // }
